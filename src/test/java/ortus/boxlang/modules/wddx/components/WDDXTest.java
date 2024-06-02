@@ -1,4 +1,4 @@
-package ortus.boxlang.moduleslug.components;
+package ortus.boxlang.modules.wddx.components;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,7 +15,7 @@ import ortus.boxlang.runtime.scopes.IScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.scopes.VariablesScope;
 
-public class ExampleComponentTest {
+public class WDDXTest {
 
 	static BoxRuntime	instance;
 	IBoxContext			context;

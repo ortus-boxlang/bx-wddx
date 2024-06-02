@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ortus.boxlang.moduleslug.components;
+package ortus.boxlang.modules.wddx.components;
 
 import java.util.Set;
 
@@ -28,12 +28,12 @@ import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxComponent( allowsBody = false )
-public class ExampleComponent extends Component {
+public class WDDX extends Component {
 
 	static Key	locationKey	= Key.of( "location" );
 	static Key	shoutKey	= Key.of( "shout" );
 
-	public ExampleComponent() {
+	public WDDX() {
 		super();
 		declaredAttributes = new Attribute[] {
 		    new Attribute( Key._NAME, "string", Set.of( Validator.REQUIRED ) ),

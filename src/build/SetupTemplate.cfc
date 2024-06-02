@@ -45,7 +45,7 @@ component {
 		command( "tokenReplace" )
 			.params(
 				path        = "/#variables.cwd#/**",
-				token       = "@MODULE_NAME@",
+				token       = "Boxlang WDDX Module",
 				replacement = moduleName
 			)
 			.run();
@@ -53,7 +53,7 @@ component {
 		command( "tokenReplace" )
 			.params(
 				path        = "/#variables.cwd#/**",
-				token       = "@MODULE_REGISTERED_NAME@",
+				token       = "wddx",
 				replacement = moduleRegisteredName
 			)
 			.run();
@@ -61,7 +61,7 @@ component {
 		command( "tokenReplace" )
 			.params(
 				path        = "/#variables.cwd#/**",
-				token       = "@MODULE_SLUG@",
+				token       = "bx-wddx",
 				replacement = moduleSlug
 			)
 			.run();
@@ -69,7 +69,7 @@ component {
 		command( "tokenReplace" )
 			.params(
 				path        = "/#variables.cwd#/**",
-				token       = "@MODULE_DESCRIPTION@",
+				token       = "BoxLang module for processing to and from WDDX",
 				replacement = moduleDescription
 			)
 			.run();
