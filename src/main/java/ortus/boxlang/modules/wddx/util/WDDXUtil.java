@@ -18,6 +18,7 @@
 package ortus.boxlang.modules.wddx.util;
 
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import ortus.boxlang.runtime.BoxRuntime;
@@ -25,8 +26,10 @@ import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.dynamic.casters.ArrayCaster;
 import ortus.boxlang.runtime.dynamic.casters.DateTimeCaster;
 import ortus.boxlang.runtime.dynamic.casters.GenericCaster;
+import ortus.boxlang.runtime.dynamic.casters.IntegerCaster;
 import ortus.boxlang.runtime.dynamic.casters.KeyCaster;
 import ortus.boxlang.runtime.dynamic.casters.QueryCaster;
+import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.types.DateTime;
@@ -61,6 +64,27 @@ public class WDDXUtil {
 
 	public static Object deserializeObject( XML obj ) {
 		switch ( obj.getNode().getNodeName() ) {
+			case "recordset" : {
+				Array	columnNames	= obj.getXMLChildrenAsList().stream().map( child -> child.getXMLAttributes().get( Key._NAME ) )
+				    .collect( BLCollector.toArray() );
+				Array	columnTypes	= obj.getXMLChildrenAsList().stream()
+				    .map( child -> child.getXMLAttributes().get( Key.type ) != null ? child.getXMLAttributes().get( Key.type ) : "string" )
+				    .collect( BLCollector.toArray() );
+				Query	result		= Query.fromArray( columnNames, columnTypes, null );
+				Array	rowData		= new Array();
+				Integer	rowCount	= IntegerCaster.cast( obj.getXMLAttributes().get( Key.of( "rowCount" ) ) );
+				IntStream.range( 0, rowCount ).forEach( idx -> {
+					IStruct row = new Struct();
+					obj.getXMLChildrenAsList().forEach( ( field ) -> {
+						String	fieldName	= StringCaster.cast( field.getXMLAttributes().get( Key._NAME ) );
+						Object	fieldValue	= deserializeObject( field.getXMLChildrenAsList().get( idx ) );
+						row.put( Key.of( fieldName ), fieldValue );
+					} );
+					rowData.add( row );
+				} );
+				result.addData( rowData );
+				return result;
+			}
 			case "struct" : {
 				IStruct structResult = new Struct( IStruct.TYPES.LINKED_CASE_SENSITIVE );
 				obj.getXMLChildrenAsList().forEach( ( child ) -> {
@@ -156,6 +180,42 @@ public class WDDXUtil {
 		serialization	+= "</" + classKey.getName() + ">";
 
 		return serialization;
+	}
+
+	/**
+	 *
+	 * Serializes an object to a Javascript variable string
+	 *
+	 * @param obj
+	 * @param variableName
+	 *
+	 * @return
+	 */
+	public static String serializeToJavascript( Object obj, String variableName ) {
+		Key		serializeKey	= Key.of( "JSONSerialize" );
+		IStruct	serializeArgs	= Struct.of(
+		    Key.var, obj,
+		    Key.queryFormat, "row",
+		    Key.useSecureJSONPrefix, false,
+		    Key.useCustomSerializer, false
+		);
+
+		return variableName + " = "
+		    + StringCaster.cast( runtime.getFunctionService().getGlobalFunction( serializeKey ).invoke( context, serializeArgs, false, serializeKey ) ) + ";";
+	}
+
+	/**
+	 *
+	 * Translates a WDDX packet to a Javascript variable string
+	 *
+	 * @param wddx
+	 * @param variableName
+	 *
+	 * @return
+	 */
+	public static String translateToJavascript( String wddx, String variableName ) {
+		Object obj = parse( wddx );
+		return serializeToJavascript( obj, variableName );
 	}
 
 }

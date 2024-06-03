@@ -19,10 +19,18 @@ package ortus.boxlang.modules.wddx.components;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ortus.boxlang.modules.wddx.util.WDDXKeys;
+import ortus.boxlang.modules.wddx.util.WDDXUtil;
+import ortus.boxlang.runtime.BoxRuntime;
 import ortus.boxlang.runtime.components.Attribute;
 import ortus.boxlang.runtime.components.BoxComponent;
 import ortus.boxlang.runtime.components.Component;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.ExpressionInterpreter;
+import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.validation.Validator;
@@ -30,41 +38,101 @@ import ortus.boxlang.runtime.validation.Validator;
 @BoxComponent( allowsBody = false )
 public class WDDX extends Component {
 
-	static Key	locationKey	= Key.of( "location" );
-	static Key	shoutKey	= Key.of( "shout" );
+	private static final Boolean	isCompatMode	= BoxRuntime.getInstance().getModuleService().getModuleNames().contains( Key.of( "compat" ) );
+	private static final String		languageTag		= isCompatMode ? "cfml" : "bx";
+
+	public static final Key			toWDDXKey		= Key.of( languageTag + "2wddx" );
+	public static final Key			toCFMLKey		= Key.of( "wddx2" + languageTag );
+	public static final Key			toJSKey			= Key.of( languageTag + "2js" );
+	public static final Key			XtoJSKey		= Key.of( "wddx2js" );
+
+	static Logger					logger			= LoggerFactory.getLogger( WDDX.class );
 
 	public WDDX() {
 		super();
 		declaredAttributes = new Attribute[] {
-		    new Attribute( Key._NAME, "string", Set.of( Validator.REQUIRED ) ),
-		    new Attribute( locationKey, "string", "world", Set.of( Validator.REQUIRED, Validator.valueOneOf( "world", "universe" ) ) ),
-		    new Attribute( shoutKey, "boolean", false, Set.of( Validator.REQUIRED ) ),
+		    new Attribute( Key.action, "string", languageTag + "2wddx",
+		        Set.of( Validator.REQUIRED, Validator.valueOneOf( languageTag + "2wddx", "wddx2" + languageTag, languageTag + "2js", "wddx2js" ) ) ),
+		    new Attribute( Key.input, "any", Set.of( Validator.REQUIRED ) ),
+		    new Attribute( Key.output, "string", Set.of( Validator.REQUIRED ) ),
+		    new Attribute( WDDXKeys.toplevelvariable, "string" ),
+		    new Attribute( WDDXKeys.usetimezoneinfo, "boolean", true ),
+		    // TODO: we warn that these are not supported, for now. Deprecate in a future release
+		    new Attribute( WDDXKeys.validate, "boolean", false ),
+		    new Attribute( WDDXKeys.xmlconform, "boolean", true ),
 		};
 	}
 
 	/**
-	 * An example component that says hello
+	 * Serializes and de-serializes CFML data structures to the XML-based WDDX format.
+	 *
+	 * Generates JavaScript statements to instantiate JavaScript objects equivalent to the contents of a WDDX packet or some CFML data structures.
+	 *
+	 * This tag cannot have a body.
+	 *
+	 * Note: If the [compatibility module](https://forgebox.io/view/bx-compat) is installed, the use of `bx` in the action attribute changes to `cfml` instead ( e.g. `cfml2wddx` )
 	 *
 	 * @param context        The context in which the Component is being invoked
 	 * @param attributes     The attributes to the Component
 	 * @param body           The body of the Component
 	 * @param executionState The execution state of the Component
 	 *
-	 * @attribute.name The name of the person greeting us.
+	 * @attribute.input The input data to be converted
 	 *
-	 * @attribute.location The location of the person.
+	 * @attribute.output The variable to which the converted data will be assigned
 	 *
-	 * @attribute.shout Whether the person is shouting or not.
+	 * @attribute.action The action to be performed on the input data. One of: bx2wddx, wddx2bx, bx2js, wddx2js
 	 *
+	 * @attribute.toplevelvariable The name of the top-level variable to be used in the generated JavaScript code
+	 *
+	 * @attribute.usetimezoneinfo Whether to use timezone information in the generated JavaScript code
+	 *
+	 * @attribute.validate Whether to validate the input XML
+	 *
+	 * @attribute.xmlconform Whether the WDDX input shoud conform to the WDDX DTD
 	 */
 	public BodyResult _invoke( IBoxContext context, IStruct attributes, ComponentBody body, IStruct executionState ) {
-		String			name		= attributes.getAsString( Key._NAME );
-		String			location	= attributes.getAsString( locationKey );
-		Boolean			shout		= attributes.getAsBoolean( shoutKey );
+		Key		actionKey			= Key.of( attributes.get( Key.action ) );
+		Object	input				= attributes.get( Key.input );
+		String	variable			= attributes.getAsString( Key.output );
+		String	toplevelvariable	= attributes.getAsString( WDDXKeys.toplevelvariable );
+		if ( toplevelvariable == null ) {
+			toplevelvariable = actionKey + "_JS";
+		}
 
-		StringBuilder	sb			= new StringBuilder();
-		String			greeting	= sb.append( "Hello, " ).append( location ).append( " - from " ).append( name ).append( "." ).toString();
-		context.writeToBuffer( shout ? greeting.toUpperCase() : greeting );
+		if ( attributes.getAsBoolean( WDDXKeys.validate ) ) {
+			logger.warn( "WDDX DTDs are no longer published nor available. Validation cannot not be performed" );
+		}
+
+		if ( !attributes.getAsBoolean( WDDXKeys.xmlconform ) ) {
+			logger.warn( "The WDDX component only allows valid XML.  All input must be valid xml. The argument `xmlConform` will be ignored." );
+		}
+
+		if ( actionKey.equals( toWDDXKey ) ) {
+			ExpressionInterpreter.setVariable(
+			    context,
+			    variable,
+			    WDDXUtil.serialize( input )
+			);
+		} else if ( actionKey.equals( toCFMLKey ) ) {
+			ExpressionInterpreter.setVariable(
+			    context,
+			    variable,
+			    WDDXUtil.parse( StringCaster.cast( input ) )
+			);
+		} else if ( actionKey.equals( toJSKey ) ) {
+			ExpressionInterpreter.setVariable(
+			    context,
+			    variable,
+			    WDDXUtil.serializeToJavascript( input, toplevelvariable )
+			);
+		} else if ( actionKey.equals( XtoJSKey ) ) {
+			ExpressionInterpreter.setVariable(
+			    context,
+			    variable,
+			    WDDXUtil.translateToJavascript( StringCaster.cast( input ), toplevelvariable )
+			);
+		}
 
 		return DEFAULT_RETURN;
 	}
