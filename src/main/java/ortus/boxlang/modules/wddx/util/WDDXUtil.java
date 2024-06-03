@@ -36,7 +36,7 @@ import ortus.boxlang.runtime.types.Struct;
 import ortus.boxlang.runtime.types.XML;
 import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 import ortus.boxlang.runtime.types.util.BLCollector;
-import ortus.boxlang.runtime.util.StringUtil;
+import ortus.boxlang.runtime.types.util.StringUtil;
 
 public class WDDXUtil {
 
