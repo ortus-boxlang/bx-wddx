@@ -43,7 +43,7 @@
 	/**
 	 * Who built the module
 	 */
-	this.author = "Luis Majano";
+	this.author = "Ortus Solutions, Corp";
 
 	/**
 	 * The module description
