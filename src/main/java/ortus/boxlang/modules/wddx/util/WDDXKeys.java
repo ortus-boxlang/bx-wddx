@@ -17,7 +17,7 @@
  */
 package ortus.boxlang.modules.wddx.util;
 
-import java.security.Key;
+import ortus.boxlang.runtime.scopes.Key;
 
 /**
  * Represents a case-insenstive key, while retaining the original case too.
