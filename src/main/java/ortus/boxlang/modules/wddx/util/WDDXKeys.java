@@ -17,7 +17,7 @@
  */
 package ortus.boxlang.modules.wddx.util;
 
-import ortus.boxlang.runtime.scopes.Key;
+import java.security.Key;
 
 /**
  * Represents a case-insenstive key, while retaining the original case too.
@@ -27,7 +27,6 @@ import ortus.boxlang.runtime.scopes.Key;
 public class WDDXKeys {
 
 	public static final Key	_MODULE_NAME		= Key.of( "wddx" );
-
 	public static final Key	toplevelvariable	= Key.of( "toplevelvariable" );
 	public static final Key	usetimezoneinfo		= Key.of( "usetimezoneinfo" );
 	public static final Key	validate			= Key.of( "validate" );

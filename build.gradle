@@ -23,7 +23,7 @@ ext {
 	branch = System.getenv( 'BRANCH' ) ?: 'development'
 }
 
-if (branch == 'development') {
+if ( branch == 'development' ) {
     // If the branch is 'development', ensure the version ends with '-snapshot'
     // This replaces any existing prerelease identifier with '-snapshot'
     version = version.contains('-') ? version.replaceAll(/-.*/, '-snapshot') : "${version}-snapshot"
@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-	
+
 	compileOnly files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '-all.jar' )
     //compileOnly files( '../boxlang/build/libs/boxlang-' + boxlangVersion + '-all.jar' )
 
