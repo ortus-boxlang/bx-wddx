@@ -3,17 +3,20 @@
 	"version": "@build.version@+@build.number@",
 	"location": "https://downloads.ortussolutions.com/ortussolutions/boxlang-modules/bx-wddx/@build.version@/bx-wddx-@build.version@.zip",
 	"author": "Ortus Solutions",
-	"homepage": "https://github.com/boxlang-modules/bx-wddx",
-	"documentation": "https://github.com/boxlang-modules/bx-wddx",
+	"homepage": "https://github.com/ortus-boxlang/bx-wddx",
+	"documentation": "https://github.com/ortus-boxlang/bx-wddx",
 	"repository": {
 		"type": "git",
-		"URL": "https://github.com/boxlang-modules/bx-wddx"
+		"URL": "https://github.com/ortus-boxlang/bx-wddx"
 	},
-	"bugs": "https://github.com/boxlang-modules/bx-wddx/issues",
+	"bugs": "https://github.com/ortus-boxlang/bx-wddx/issues",
 	"slug": "bx-wddx",
 	"shortDescription": "BoxLang module for processing to and from Web Distributed Data eXchange (WDDX)",
 	"type": "boxlang-modules",
-	"keywords": ["boxlang", "wddx"],
+	"keywords": [
+		"boxlang",
+		"wddx"
+	],
 	"boxlang": {
 		"minimumVersion": "1.0.0",
 		"moduleName": "wddx"
