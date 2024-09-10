@@ -1,21 +1,23 @@
 /**
- * This is the module descriptor and entry point for your module in the runtime.
+ * This is the module descriptor and entry point for your module in the Runtime.
  * The unique name of the moduel is the name of the directory on the modules folder.
- * A BoxLang mapping will be created for you with the name of the module.
+ * A BoxLang Mapping will be created for you with the name of the module.
  *
- * A module can have the following folders that will be automatically registered:
+ * A Module can have the following folders that will be automatically registered:
  * + bifs - Custom BIFs that will be registered into the runtime
- * + interceptors - Custom interceptors that will be registered into the runtime via the configure() method
- * + libs - Custom java libraries that your module leverages
+ * + interceptors - Custom Interceptors that will be registered into the runtime via the configure() method
+ * + libs - Custom Java libraries that your module leverages
  * + tags - Custom tags that will be registered into the runtime
  *
- * Every module will have its own classloader that will be used to load the module libs and dependencies.
+ * Every Module will have it's own ClassLoader that will be used to load the module libs and dependencies.
  */
 
-class {
+ class {
 
+	// Injected at runtime by BoxLang
 	property name="moduleRecord";
 	property name="boxRuntime";
+	property name="interceptorService";
 	property name="log";
 
 	/**
@@ -30,23 +32,23 @@ class {
 	 * Your module version. Try to use semantic versioning
 	 * @mandatory
 	 */
-	this.version = "@build.version@+@build.number@";
+	this.version = "1.0.0";
 
 	/**
 	 * The BoxLang mapping for your module.  All BoxLang modules are registered with an internal
 	 * mapping prefix of : bxModules.{this.mapping}, /bxmodules/{this.mapping}. Ex: bxModules.test, /bxmodules/test
 	 */
-	this.mapping = "bxwddx";
+	this.mapping = "bxWddx";
 
 	/**
 	 * Who built the module
 	 */
-	this.author = "Ortus Solutions";
+	this.author = "Luis Majano";
 
 	/**
 	 * The module description
 	 */
-	this.description = "This module supports WDDX for BoxLang";
+	this.description = "The WDDX Compatibility Module for BoxLang";
 
 	/**
 	 * The module web URL
@@ -71,8 +73,7 @@ class {
 		/**
 		 * Every module has a settings configuration object
 		 */
-		settings = {
-		};
+		settings = {};
 
 		/**
 		 * Every module can have a list of object mappings
@@ -88,14 +89,6 @@ class {
 		}
 
 		/**
-		 * DataSources can be defined by a module and they will be registered
-		 * for you in the runtime
-		 */
-		datasources = {
-			// { name="MyDSN", class="coldbox.system.datasources.ColdBoxDataSource", properties={dsn="mydsn"} }
-		};
-
-		/**
 		 * The module interceptors to register into the runtime
 		 */
 		interceptors = [
@@ -105,29 +98,7 @@ class {
 		/**
 		 * A list of custom interception points to register into the runtime
 		 */
-		customInterceptionPoints = [ ];
+		customInterceptionPoints = [];
 	}
-
-	/**
-	 * Called by the ModuleService on module activation
-	 */
-	function onLoad(){
-
-	}
-
-	/**
-	 * Called by the ModuleService on module deactivation
-	 */
-	function onUnload(){
-
-	}
-
-	/**
-	 * --------------------------------------------------------------------------
-	 * Module Events
-	 * --------------------------------------------------------------------------
-	 * You can listen to any runtime events by creating the methods
-	 * that match the approved runtime interception points
-	 */
 
 }
