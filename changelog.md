@@ -9,10 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2024-10-21
+
 ## [1.0.0] - 2024-09-10
 
 - Initial release of module
 
-[Unreleased]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.1.0...HEAD
+
+[1.1.0]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.0.0...v1.1.0
 
 [1.0.0]: https://github.com/ortus-boxlang/bx-wddx/compare/9b786eb8c968516d5f10eafce22803fb7344e1a0...v1.0.0
