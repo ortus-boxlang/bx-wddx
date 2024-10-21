@@ -38,7 +38,7 @@ import ortus.boxlang.runtime.validation.Validator;
 @BoxComponent( allowsBody = false )
 public class WDDX extends Component {
 
-	private static final Boolean	isCompatMode	= BoxRuntime.getInstance().getModuleService().getModuleNames().contains( Key.of( "compat" ) );
+	private static final Boolean	isCompatMode	= BoxRuntime.getInstance().getModuleService().getModuleNames().contains( Key.of( "compat-cfml" ) );
 	private static final String		languageTag		= isCompatMode ? "cfml" : "bx";
 
 	public static final Key			toWDDXKey		= Key.of( languageTag + "2wddx" );
