@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import ortus.boxlang.runtime.BoxRuntime;
 import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.dynamic.casters.ArrayCaster;
+import ortus.boxlang.runtime.dynamic.casters.BooleanCaster;
 import ortus.boxlang.runtime.dynamic.casters.DateTimeCaster;
 import ortus.boxlang.runtime.dynamic.casters.GenericCaster;
 import ortus.boxlang.runtime.dynamic.casters.IntegerCaster;
@@ -95,6 +96,9 @@ public class WDDXUtil {
 			case "array" : {
 				return obj.getXMLChildrenAsList().stream().map( WDDXUtil::deserializeObject ).collect( BLCollector.toArray() );
 			}
+			case "boolean" : {
+				return BooleanCaster.cast( obj.getXMLAttributes().get( Key.value ) );
+			}
 			default : {
 				return GenericCaster.cast( context, obj.getXMLText(), obj.getNode().getNodeName() );
 			}
@@ -126,6 +130,11 @@ public class WDDXUtil {
 		if ( obj instanceof Query ) {
 			return serializeQuery( QueryCaster.cast( obj ) );
 		}
+		// Booleans have a different pattern, in that they do not have an outer wrapper
+		if ( obj instanceof Boolean ) {
+			return "<boolean value=\"" + obj.toString() + "\"/>";
+		}
+
 		Key		classKey		= Key.of( StringUtil.lcFirst( obj.getClass().getSimpleName() ) );
 		String	serialization	= "<" + classKey.getName() + ( obj instanceof Array ? " length=\"" + ArrayCaster.cast( obj ).size() + "\"" : "" ) + ">";
 		if ( obj instanceof IStruct ) {
