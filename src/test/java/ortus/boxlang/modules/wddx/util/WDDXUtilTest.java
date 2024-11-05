@@ -26,6 +26,7 @@ import java.time.ZoneId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import ortus.boxlang.runtime.dynamic.casters.StructCaster;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.types.DateTime;
@@ -40,10 +41,11 @@ public class WDDXUtilTest {
 	@Test
 	void testSerializeStruct() {
 		IStruct	test	= Struct.of(
-		    "foo", "bar"
+		    "foo", "bar",
+		    "isWDDX", true
 		);
 		String	wddx	= WDDXUtil.serializeObject( test );
-		assertEquals( "<struct><var name=\"foo\"><string>bar</string></var></struct>", wddx );
+		assertEquals( "<struct><var name=\"isWDDX\"><boolean value=\"true\"/></var><var name=\"foo\"><string>bar</string></var></struct>", wddx );
 	}
 
 	@DisplayName( "Test array serialization" )
@@ -105,12 +107,24 @@ public class WDDXUtilTest {
 		                  			<var name=\"foo\">
 		                  				<string>bar</string>
 		                  			</var>
+		                  			<var name=\"isWDDX\">
+		                  				<boolean value=\"true\"/>
+		                  			</var>
 		                  		</struct>
 		                  	</data>
 		                  </wddxPacket>
 		                  """.trim();
 		Object	result	= WDDXUtil.parse( wddx );
 		assertTrue( result instanceof IStruct );
+		IStruct deserialized = StructCaster.cast( result );
+		assertTrue( deserialized.containsKey( Key.of( "flea" ) ) );
+		assertTrue( deserialized.get( Key.of( "flea" ) ) instanceof Array );
+		assertTrue( deserialized.containsKey( Key.of( "flah" ) ) );
+		assertTrue( deserialized.get( Key.of( "flah" ) ) instanceof IStruct );
+		assertTrue( deserialized.containsKey( Key.of( "foo" ) ) );
+		assertTrue( deserialized.get( Key.of( "foo" ) ) instanceof String );
+		assertTrue( deserialized.containsKey( Key.of( "isWDDX" ) ) );
+		assertTrue( deserialized.get( Key.of( "isWDDX" ) ) instanceof Boolean );
 	}
 
 }
