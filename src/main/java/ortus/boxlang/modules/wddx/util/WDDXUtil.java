@@ -168,11 +168,11 @@ public class WDDXUtil {
 		String	serialization	= "<"
 		    + classKey.getName()
 		    + " rowCount=\"" + obj.getData().size() + "\""
-		    + " fieldNames=\"" + obj.columnList() + "\""
+		    + " fieldNames=\"" + obj.getColumnList() + "\""
 		    + " type=\"" + obj.getClass().getName() + "\""
 		    + ">";
 
-		serialization	+= obj.columnArray().stream().map( ( column ) -> {
+		serialization	+= obj.getColumnArray().stream().map( ( column ) -> {
 
 							String field = "<field name=\"" + column + "\">";
 
@@ -203,7 +203,7 @@ public class WDDXUtil {
 	public static String serializeToJavascript( Object obj, String variableName ) {
 		Key		serializeKey	= Key.of( "JSONSerialize" );
 		IStruct	serializeArgs	= Struct.of(
-		    Key.var, obj,
+		    Key.data, obj,
 		    Key.queryFormat, "row",
 		    Key.useSecureJSONPrefix, false,
 		    Key.useCustomSerializer, false
