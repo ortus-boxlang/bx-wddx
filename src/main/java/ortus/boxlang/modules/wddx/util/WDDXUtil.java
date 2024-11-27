@@ -203,7 +203,7 @@ public class WDDXUtil {
 	public static String serializeToJavascript( Object obj, String variableName ) {
 		Key		serializeKey	= Key.of( "JSONSerialize" );
 		IStruct	serializeArgs	= Struct.of(
-		    Key.data, obj,
+		    Key.var, obj,
 		    Key.queryFormat, "row",
 		    Key.useSecureJSONPrefix, false,
 		    Key.useCustomSerializer, false
