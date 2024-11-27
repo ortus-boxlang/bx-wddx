@@ -168,11 +168,11 @@ public class WDDXUtil {
 		String	serialization	= "<"
 		    + classKey.getName()
 		    + " rowCount=\"" + obj.getData().size() + "\""
-		    + " fieldNames=\"" + obj.getColumnList() + "\""
+		    + " fieldNames=\"" + obj.columnList() + "\""
 		    + " type=\"" + obj.getClass().getName() + "\""
 		    + ">";
 
-		serialization	+= obj.getColumnArray().stream().map( ( column ) -> {
+		serialization	+= obj.columnArray().stream().map( ( column ) -> {
 
 							String field = "<field name=\"" + column + "\">";
 
