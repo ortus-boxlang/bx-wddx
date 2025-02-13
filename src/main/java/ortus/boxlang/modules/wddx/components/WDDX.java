@@ -19,15 +19,14 @@ package ortus.boxlang.modules.wddx.components;
 
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ortus.boxlang.modules.wddx.util.WDDXKeys;
 import ortus.boxlang.modules.wddx.util.WDDXUtil;
 import ortus.boxlang.runtime.BoxRuntime;
 import ortus.boxlang.runtime.components.Attribute;
 import ortus.boxlang.runtime.components.BoxComponent;
 import ortus.boxlang.runtime.components.Component;
+import ortus.boxlang.runtime.components.Component.BodyResult;
+import ortus.boxlang.runtime.components.Component.ComponentBody;
 import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.dynamic.ExpressionInterpreter;
 import ortus.boxlang.runtime.dynamic.casters.StringCaster;
@@ -38,15 +37,14 @@ import ortus.boxlang.runtime.validation.Validator;
 @BoxComponent( allowsBody = false )
 public class WDDX extends Component {
 
-	private static final Boolean	isCompatMode	= BoxRuntime.getInstance().getModuleService().getModuleNames().contains( Key.of( "compat-cfml" ) );
-	private static final String		languageTag		= isCompatMode ? "cfml" : "bx";
+	private static final Boolean		isCompatMode	= BoxRuntime.getInstance().getModuleService().getModuleNames().contains( Key.of( "compat-cfml" ) );
+	private static final String			languageTag		= isCompatMode ? "cfml" : "bx";
+	private static final BoxLangLogger	logger			= BoxRuntime.getInstance().getLoggingService().getRuntimeLogger();
 
-	public static final Key			toWDDXKey		= Key.of( languageTag + "2wddx" );
-	public static final Key			toCFMLKey		= Key.of( "wddx2" + languageTag );
-	public static final Key			toJSKey			= Key.of( languageTag + "2js" );
-	public static final Key			XtoJSKey		= Key.of( "wddx2js" );
-
-	static Logger					logger			= LoggerFactory.getLogger( WDDX.class );
+	public static final Key				toWDDXKey		= Key.of( languageTag + "2wddx" );
+	public static final Key				toCFMLKey		= Key.of( "wddx2" + languageTag );
+	public static final Key				toJSKey			= Key.of( languageTag + "2js" );
+	public static final Key				XtoJSKey		= Key.of( "wddx2js" );
 
 	public WDDX() {
 		super();
