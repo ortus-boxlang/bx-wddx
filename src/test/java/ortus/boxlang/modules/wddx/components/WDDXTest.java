@@ -64,10 +64,12 @@ public class WDDXTest {
 	@DisplayName( "It tests BX2WDDX in BX Script" )
 	@Test
 	public void testBX2WDDXBXS() {
+		// @formatter:off
 		instance.executeSource( """
-		                        qry = queryNew("id,test","integer,varchar",[{id:1,test:"test"},{id:2,test:"name"}]);
-		                        wddx action="bx2wddx" input=qry output="result";
-		                                          """, context, BoxSourceType.BOXSCRIPT );
+			qry = queryNew("id,test","integer,varchar",[{id:1,test:"test"},{id:2,test:"name"}]);
+			bx:wddx action="bx2wddx" input=qry output="result";
+		""", context, BoxSourceType.BOXSCRIPT );
+		// @formatter:on
 		assertEquals(
 		    variables.getAsString( result ),
 		    "<wddxPacket version=\"1.0\"><header/><data><recordset rowCount=\"2\" fieldNames=\"id,test\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"id\"><integer>1</integer><integer>2</integer></field><field name=\"test\"><string>test</string><string>name</string></field></recordset></data></wddxPacket>"
@@ -79,10 +81,11 @@ public class WDDXTest {
 	public void testWDDX2BX() {
 		variables.put( Key.of( "packet" ),
 		    "<wddxPacket version=\"1.0\"><header/><data><recordset rowCount=\"2\" fieldNames=\"id,test\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"id\"><integer>1</integer><integer>2</integer></field><field name=\"test\"><string>test</string><string>name</string></field></recordset></data></wddxPacket>" );
+		// @formatter:off
 		instance.executeSource( """
-		                        wddx action="wddx2bx" input=packet output="result";
-		                                          """, context, BoxSourceType.BOXSCRIPT );
-
+			bx:wddx action="wddx2bx" input=packet output="result";
+		""", context, BoxSourceType.BOXSCRIPT );
+		// @formatter:on
 		assertTrue( variables.get( result ) instanceof ortus.boxlang.runtime.types.Query );
 		assertEquals( 2, QueryCaster.cast( variables.get( result ) ).getData().size() );
 
@@ -93,10 +96,12 @@ public class WDDXTest {
 	public void testWDDX2JS() {
 		variables.put( Key.of( "packet" ),
 		    "<wddxPacket version=\"1.0\"><header/><data><recordset rowCount=\"2\" fieldNames=\"id,test\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"id\"><integer>1</integer><integer>2</integer></field><field name=\"test\"><string>test</string><string>name</string></field></recordset></data></wddxPacket>" );
+		// @formatter:off
 		instance.executeSource( """
-		                        wddx action="wddx2js" input=packet output="result" topLevelVariable="myData";
-		                                          """, context, BoxSourceType.BOXSCRIPT );
+		    bx:wddx action="wddx2js" input=packet output="result" topLevelVariable="myData";
+		""", context, BoxSourceType.BOXSCRIPT );
 
+		// @formatter:on
 		assertTrue( variables.get( result ) instanceof String );
 		assertTrue( variables.getAsString( result ).contains( "myData" ) );
 		assertTrue( variables.getAsString( result ).contains( "\"columns\"" ) );
@@ -107,10 +112,13 @@ public class WDDXTest {
 	@DisplayName( "It tests CFML2JS in BX Script" )
 	@Test
 	public void testCFMLToJS() {
+		// @formatter:off
 		instance.executeSource( """
-		                        qry = queryNew("id,test","integer,varchar",[{id:1,test:"test"},{id:2,test:"name"}]);
-		                        wddx action="bx2js" input=qry output="result" topLevelVariable="myData";
-		                                          """, context, BoxSourceType.BOXSCRIPT );
+			qry = queryNew("id,test","integer,varchar",[{id:1,test:"test"},{id:2,test:"name"}]);
+			bx:wddx action="bx2js" input=qry output="result" topLevelVariable="myData";
+		""", context, BoxSourceType.BOXSCRIPT );
+
+		// @formatter:on
 		System.out.println( variables.getAsString( result ) );
 		assertTrue( variables.get( result ) instanceof String );
 		assertTrue( variables.getAsString( result ).contains( "myData" ) );

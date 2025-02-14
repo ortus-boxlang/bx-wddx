@@ -18,6 +18,7 @@
 
 package ortus.boxlang.modules.wddx.util;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,7 +46,10 @@ public class WDDXUtilTest {
 		    "isWDDX", true
 		);
 		String	wddx	= WDDXUtil.serializeObject( test );
-		assertEquals( "<struct><var name=\"isWDDX\"><boolean value=\"true\"/></var><var name=\"foo\"><string>bar</string></var></struct>", wddx );
+
+		// Can't assert the whole thing, since maps can be iterated in any order
+		assertThat( wddx ).contains( "<var name=\"foo\"><string>bar</string></var>" );
+		assertThat( wddx ).contains( "<var name=\"isWDDX\"><boolean value=\"true\"/></var>" );
 	}
 
 	@DisplayName( "Test array serialization" )
