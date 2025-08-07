@@ -1,6 +1,7 @@
 .gradle
 bin/**
 build/**
+docs/**
 !gradle/wrapper/gradle-wrapper.jar
 
 ### IntelliJ IDEA ###
