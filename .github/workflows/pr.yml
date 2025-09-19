@@ -12,8 +12,17 @@ on:
       - "releases/v*"
       - development
 
+env:
+  JDK_VERSION: 21
+  GRADLE_VERSION: 8.11
+
 jobs:
   tests:
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
+      issues: read
     uses: ./.github/workflows/tests.yml
     secrets: inherit
 
@@ -23,17 +32,22 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "temurin"
-          java-version: 21
+          java-version: ${{ env.JDK_VERSION }}
 
-      - uses: Ortus-Solutions/commandbox-action@v1.0.2
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - uses: Ortus-Solutions/commandbox-action@v1.0.3
         with:
           cmd: run-script format:check
 
       - name: Verify Code Formatting
-        run: ./gradlew spotlessCheck
+        run: gradle spotlessCheck

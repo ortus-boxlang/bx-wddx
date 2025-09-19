@@ -2,11 +2,11 @@
 plugins {
     id 'java'
     // For source code formatting
-    id "com.diffplug.spotless" version "7.0.2"
+    id "com.diffplug.spotless" version "7.2.1"
 	// https://github.com/harbby/gradle-serviceloader
     id "com.github.harbby.gradle.serviceloader" version "1.1.9"
 	// Shadow
-	id "com.gradleup.shadow" version "9.0.0-beta8"
+	id "com.gradleup.shadow" version "9.1.0"
     // Download task
     id "de.undercouch.download" version "5.6.0"
 }
@@ -35,15 +35,13 @@ repositories {
 
 dependencies {
 
-	// Look for it in the local build directory
-	// You must run `./gradle build -x test` in the BoxLang project
-	compileOnly files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '.jar' )
-    compileOnly files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar' )
-
-    // Testing Dependencies
-	testImplementation files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar'  )
-	testImplementation files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '.jar' )
-    // Test Frameworks
+	// BoxLang Dependencies
+	compileOnly "io.boxlang:boxlang:1.5.0"
+	testImplementation "io.boxlang:boxlang:1.5.0"
+	// Uncomment only for local testing
+	// compileOnly files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar' )
+	// testImplementation files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar'  )
+	// Test Frameworks
 	testImplementation "org.junit.jupiter:junit-jupiter:5.+"
 	testImplementation "org.mockito:mockito-core:5.+"
 	testImplementation "com.google.truth:truth:1.+"
@@ -67,7 +65,6 @@ compileTestJava{
 	// Make sure the service loaders are created before testing
 	dependsOn compileJava, serviceLoaderBuild
 }
-compileTestJava.finalizedBy( shadowJar )
 
 /**
  * Clean up
@@ -126,7 +123,6 @@ shadowJar {
     mergeServiceFiles()
     destinationDirectory = file( "build/libs" )
 }
-build.finalizedBy( shadowJar )
 
 /**
  * Source Code Formatting
@@ -148,12 +144,16 @@ spotless {
  * - Copies the src/main/bx/** to build/module/ folder.
  */
 task createModuleStructure(type: Copy) {
+    dependsOn jar
     from( 'build/libs' ) {
+		// Note: I have no idea why gradle still adds the -all to the .jar in this directory
 		include "${project.name}-${version}.jar"
         into 'libs'
     }
     from( 'src/main/bx' ) {
 		include '**/*.bx'
+		include '**/*.cfc'
+		include '**/*.cfm'
 		// Token Replacements Go Here
 		filter{ line -> line.replaceAll( '@build.version@', project.version ) }
 		if( project.branch == "development" ){
@@ -213,6 +213,44 @@ task downloadBoxLang( type: Download ) {
     dest "src/test/resources/libs/boxlang-${boxlangVersion}.jar"
     overwrite true
     onlyIfModified false
+}
+
+/**
+ * Task to download the BoxLang Doc Generator
+ * This is a temporary task until we publish it to maven
+ */
+task downloadDocGenerator( type: Download ) {
+	// Create the destination directory
+	doFirst {
+		file( "src/test/resources/libs" ).mkdirs()
+	}
+    // Configure the URL of the file to download
+    src "https://downloads.ortussolutions.com/ortussolutions/boxlang-runtimes/boxlang-doc-generator/1.0.0-snapshot/boxlang-doc-generator-1.0.0-snapshot.jar"
+    // Specify the destination directory for the downloaded file
+    dest "src/test/resources/libs/boxlang-doc-generator-1.0.0-snapshot.jar"
+    overwrite true
+    onlyIfModified false
+}
+
+/**
+ * Generate/Scaffold technical documentation
+ */
+task generateTechnicalDocumentation( type: Javadoc ) {
+	source = sourceSets.main.java
+	dependsOn downloadDocGenerator, compileJava, serviceLoaderBuild
+	// Uncomment and comment the above for local build testing of the doc generator
+	// dependsOn compileJava, serviceLoaderBuild
+	def classPaths = new ArrayList<File>( sourceSets.main.runtimeClasspath.getFiles() )
+	classPaths.addAll( sourceSets.main.java.getFiles() )
+	classPaths.addAll( files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '.jar' ) )
+	classPaths.addAll( files( 'src/test/resources/libs/boxlang-doc-generator-1.0.0-snapshot.jar' ) )
+	options.classpath( classPaths )
+	options.addBooleanOption( "Xdoclint:none", true )
+	exclude '**/boxlang/parser/**'
+	// exclude '**/boxlang/runtime/**'
+	options.addBooleanOption( 'html5', true )
+	options.doclet = "ortus.boxlang.tools.doclets.BoxLangDoclet"
+    options.docletpath = classPaths
 }
 
 /**
