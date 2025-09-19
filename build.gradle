@@ -37,15 +37,13 @@ repositories {
 
 dependencies {
 
-	// Look for it in the local build directory
-	// You must run `./gradle build -x test` in the BoxLang project
-	compileOnly files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '.jar' )
-    compileOnly files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar' )
-
-    // Testing Dependencies
-	testImplementation files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar'  )
-	testImplementation files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '.jar' )
-    // Test Frameworks
+	// BoxLang Dependencies
+	compileOnly "io.boxlang:boxlang:1.5.0"
+	testImplementation "io.boxlang:boxlang:1.5.0"
+	// Uncomment only for local testing
+	// compileOnly files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar' )
+	// testImplementation files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar'  )
+	// Test Frameworks
 	testImplementation "org.junit.jupiter:junit-jupiter:5.+"
 	testImplementation "org.mockito:mockito-core:5.+"
 	testImplementation "com.google.truth:truth:1.+"

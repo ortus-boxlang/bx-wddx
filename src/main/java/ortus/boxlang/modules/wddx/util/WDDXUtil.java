@@ -87,7 +87,7 @@ public class WDDXUtil {
 				return result;
 			}
 			case "struct" : {
-				IStruct structResult = new Struct( IStruct.TYPES.LINKED_CASE_SENSITIVE );
+				IStruct structResult = new Struct();
 				obj.getXMLChildrenAsList().forEach( ( child ) -> {
 					structResult.put( KeyCaster.cast( child.getXMLAttributes().get( Key._NAME ) ), deserializeObject( child.getXMLChildrenAsList().get( 0 ) ) );
 				} );
