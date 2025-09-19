@@ -53,7 +53,7 @@ jobs:
 
       - name: Format Java Source
         run: |
-          ./gradlew spotlessApply --stacktrace
+          gradle spotlessApply --stacktrace
 
       - name: Commit Format Changes
         uses: stefanzweifel/git-auto-commit-action@v6
