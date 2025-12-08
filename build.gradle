@@ -36,8 +36,8 @@ repositories {
 dependencies {
 
 	// BoxLang Dependencies
-	compileOnly "io.boxlang:boxlang:1.5.0"
-	testImplementation "io.boxlang:boxlang:1.5.0"
+	compileOnly "io.boxlang:boxlang:1.7.0"
+	testImplementation "io.boxlang:boxlang:1.7.0"
 	// Uncomment only for local testing
 	// compileOnly files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar' )
 	// testImplementation files( '../../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar'  )
