@@ -131,4 +131,37 @@ public class WDDXUtilTest {
 		assertTrue( deserialized.get( Key.of( "isWDDX" ) ) instanceof Boolean );
 	}
 
+	@DisplayName( "Test serialization escapes XML special characters in struct keys" )
+	@Test
+	void testSerializeEscapesSpecialCharsInKeys() {
+		IStruct	test	= Struct.of(
+		    "<script>alert('xss')</script>", "value",
+		    "normal", "data"
+		);
+		String	wddx	= WDDXUtil.serializeObject( test );
+		assertThat( wddx ).contains( "<var name=\"&lt;script&gt;alert(&apos;xss&apos;)&lt;/script&gt;\">" );
+		assertThat( wddx ).doesNotContain( "name=\"<script>" );
+	}
+
+	@DisplayName( "Test serialization escapes XML special characters in string values" )
+	@Test
+	void testSerializeEscapesSpecialCharsInValues() {
+		String wddx = WDDXUtil.serializeObject( "foo < bar & baz > qux" );
+		assertEquals( "<string>foo &lt; bar &amp; baz &gt; qux</string>", wddx );
+	}
+
+	@DisplayName( "Test round-trip serialization/deserialization with special characters" )
+	@Test
+	void testRoundTripWithSpecialChars() {
+		IStruct	original	= Struct.of(
+		    "<regex>", "value with < and > and & chars"
+		);
+		String	wddx		= WDDXUtil.serialize( original );
+		Object	result		= WDDXUtil.parse( wddx );
+		assertTrue( result instanceof IStruct );
+		IStruct deserialized = StructCaster.cast( result );
+		assertTrue( deserialized.containsKey( Key.of( "<regex>" ) ) );
+		assertEquals( "value with < and > and & chars", deserialized.get( Key.of( "<regex>" ) ) );
+	}
+
 }
