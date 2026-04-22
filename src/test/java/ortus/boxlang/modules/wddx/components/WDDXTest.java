@@ -44,7 +44,7 @@ public class WDDXTest {
 		                                          """, context, BoxSourceType.CFTEMPLATE );
 		assertEquals(
 		    variables.getAsString( result ),
-		    "<wddxPacket version=\"1.0\"><header/><data><recordset rowCount=\"2\" fieldNames=\"id,test\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"id\"><integer>1</integer><integer>2</integer></field><field name=\"test\"><string>test</string><string>name</string></field></recordset></data></wddxPacket>"
+		    "<wddxPacket version='1.0'><header/><data><recordset rowCount='2' fieldNames='id,test' type='ortus.boxlang.runtime.types.Query'><field name='id'><integer>1</integer><integer>2</integer></field><field name='test'><string>test</string><string>name</string></field></recordset></data></wddxPacket>"
 		);
 	}
 
@@ -57,7 +57,7 @@ public class WDDXTest {
 		                                          """, context, BoxSourceType.BOXTEMPLATE );
 		assertEquals(
 		    variables.getAsString( result ),
-		    "<wddxPacket version=\"1.0\"><header/><data><recordset rowCount=\"2\" fieldNames=\"id,test\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"id\"><integer>1</integer><integer>2</integer></field><field name=\"test\"><string>test</string><string>name</string></field></recordset></data></wddxPacket>"
+		    "<wddxPacket version='1.0'><header/><data><recordset rowCount='2' fieldNames='id,test' type='ortus.boxlang.runtime.types.Query'><field name='id'><integer>1</integer><integer>2</integer></field><field name='test'><string>test</string><string>name</string></field></recordset></data></wddxPacket>"
 		);
 	}
 
@@ -72,7 +72,7 @@ public class WDDXTest {
 		// @formatter:on
 		assertEquals(
 		    variables.getAsString( result ),
-		    "<wddxPacket version=\"1.0\"><header/><data><recordset rowCount=\"2\" fieldNames=\"id,test\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"id\"><integer>1</integer><integer>2</integer></field><field name=\"test\"><string>test</string><string>name</string></field></recordset></data></wddxPacket>"
+		    "<wddxPacket version='1.0'><header/><data><recordset rowCount='2' fieldNames='id,test' type='ortus.boxlang.runtime.types.Query'><field name='id'><integer>1</integer><integer>2</integer></field><field name='test'><string>test</string><string>name</string></field></recordset></data></wddxPacket>"
 		);
 	}
 
@@ -80,7 +80,7 @@ public class WDDXTest {
 	@Test
 	public void testWDDX2BX() {
 		variables.put( Key.of( "packet" ),
-		    "<wddxPacket version=\"1.0\"><header/><data><recordset rowCount=\"2\" fieldNames=\"id,test\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"id\"><integer>1</integer><integer>2</integer></field><field name=\"test\"><string>test</string><string>name</string></field></recordset></data></wddxPacket>" );
+		    "<wddxPacket version='1.0'><header/><data><recordset rowCount='2' fieldNames='id,test' type='ortus.boxlang.runtime.types.Query'><field name='id'><integer>1</integer><integer>2</integer></field><field name='test'><string>test</string><string>name</string></field></recordset></data></wddxPacket>" );
 		// @formatter:off
 		instance.executeSource( """
 			bx:wddx action="wddx2bx" input=packet output="result";
@@ -95,7 +95,7 @@ public class WDDXTest {
 	@Test
 	public void testWDDX2JS() {
 		variables.put( Key.of( "packet" ),
-		    "<wddxPacket version=\"1.0\"><header/><data><recordset rowCount=\"2\" fieldNames=\"id,test\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"id\"><integer>1</integer><integer>2</integer></field><field name=\"test\"><string>test</string><string>name</string></field></recordset></data></wddxPacket>" );
+		    "<wddxPacket version='1.0'><header/><data><recordset rowCount='2' fieldNames='id,test' type='ortus.boxlang.runtime.types.Query'><field name='id'><integer>1</integer><integer>2</integer></field><field name='test'><string>test</string><string>name</string></field></recordset></data></wddxPacket>" );
 		// @formatter:off
 		instance.executeSource( """
 		    bx:wddx action="wddx2js" input=packet output="result" topLevelVariable="myData";

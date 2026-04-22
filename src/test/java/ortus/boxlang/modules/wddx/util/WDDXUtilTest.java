@@ -48,8 +48,8 @@ public class WDDXUtilTest {
 		String	wddx	= WDDXUtil.serializeObject( test );
 
 		// Can't assert the whole thing, since maps can be iterated in any order
-		assertThat( wddx ).contains( "<var name=\"foo\"><string>bar</string></var>" );
-		assertThat( wddx ).contains( "<var name=\"isWDDX\"><boolean value=\"true\"/></var>" );
+		assertThat( wddx ).contains( "<var name='foo'><string>bar</string></var>" );
+		assertThat( wddx ).contains( "<var name='isWDDX'><boolean value='true'/></var>" );
 	}
 
 	@DisplayName( "Test array serialization" )
@@ -57,7 +57,7 @@ public class WDDXUtilTest {
 	void testSerializeArray() {
 		Array	test	= Array.of( "foo", "bar" );
 		String	wddx	= WDDXUtil.serializeObject( test );
-		assertEquals( "<array length=\"2\"><string>foo</string><string>bar</string></array>", wddx );
+		assertEquals( "<array length='2'><string>foo</string><string>bar</string></array>", wddx );
 	}
 
 	@DisplayName( "Test query serialization" )
@@ -73,7 +73,7 @@ public class WDDXUtilTest {
 		qry.setCell( Key.of( "col2" ), 1, 101 );
 		String wddx = WDDXUtil.serializeObject( qry );
 		assertEquals(
-		    "<recordset rowCount=\"3\" fieldNames=\"foo,col2\" type=\"ortus.boxlang.runtime.types.Query\"><field name=\"foo\"><string>bar</string><string>brad</string><string>luis</string></field><field name=\"col2\"><integer>100</integer><integer>101</integer><integer>42</integer></field></recordset>",
+		    "<recordset rowCount='3' fieldNames='foo,col2' type='ortus.boxlang.runtime.types.Query'><field name='foo'><string>bar</string><string>brad</string><string>luis</string></field><field name='col2'><integer>100</integer><integer>101</integer><integer>42</integer></field></recordset>",
 		    wddx );
 	}
 
@@ -89,30 +89,30 @@ public class WDDXUtilTest {
 	@Test
 	void testParse() {
 		String	wddx	= """
-		                  <wddxPacket version=\"1.0\">
+		                  <wddxPacket version='1.0'>
 		                  	<header/>
 		                  	<data>
 		                  		<struct>
-		                  			<var name=\"flea\">
-		                  				<array length=\"4\">
+		                  			<var name='flea'>
+		                  				<array length='4'>
 		                  					<string>foo</string>
 		                  					<string>bar</string>
 		                  					<string>baz</string>
 		                  					<dateTime>2024-06-02T16:31:57Z</dateTime>
 		                  				</array>
 		                  			</var>
-		                  			<var name=\"flah\">
+		                  			<var name='flah'>
 		                  				<struct>
-		                  					<var name=\"bar\">
+		                  					<var name='bar'>
 		                  						<string>bazz</string>
 		                  					</var>
 		                  				</struct>
 		                  			</var>
-		                  			<var name=\"foo\">
+		                  			<var name='foo'>
 		                  				<string>bar</string>
 		                  			</var>
-		                  			<var name=\"isWDDX\">
-		                  				<boolean value=\"true\"/>
+		                  			<var name='isWDDX'>
+		                  				<boolean value='true'/>
 		                  			</var>
 		                  		</struct>
 		                  	</data>
@@ -139,7 +139,7 @@ public class WDDXUtilTest {
 		    "normal", "data"
 		);
 		String	wddx	= WDDXUtil.serializeObject( test );
-		assertThat( wddx ).contains( "<var name=\"&lt;script&gt;alert(&apos;xss&apos;)&lt;/script&gt;\">" );
+		assertThat( wddx ).contains( "<var name='&lt;script&gt;alert(&apos;xss&apos;)&lt;/script&gt;'>" );
 		assertThat( wddx ).doesNotContain( "name=\"<script>" );
 	}
 

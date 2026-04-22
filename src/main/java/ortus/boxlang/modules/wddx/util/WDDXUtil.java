@@ -149,7 +149,7 @@ public class WDDXUtil {
 	 * @return String the WDDX xml
 	 */
 	public static String serialize( Object obj ) {
-		String wddx = "<wddxPacket version=\"1.0\"><header/><data>";
+		String wddx = "<wddxPacket version='1.0'><header/><data>";
 		wddx	+= serializeObject( obj );
 		wddx	+= "</data></wddxPacket>";
 		return wddx;
@@ -168,15 +168,15 @@ public class WDDXUtil {
 		}
 		// Booleans have a different pattern, in that they do not have an outer wrapper
 		if ( obj instanceof Boolean ) {
-			return "<boolean value=\"" + obj.toString() + "\"/>";
+			return "<boolean value='" + obj.toString() + "'/>";
 		}
 
 		Key		classKey		= Key.of( StringUtil.lcFirst( obj.getClass().getSimpleName() ) );
-		String	serialization	= "<" + classKey.getName() + ( obj instanceof Array ? " length=\"" + ArrayCaster.cast( obj ).size() + "\"" : "" ) + ">";
+		String	serialization	= "<" + classKey.getName() + ( obj instanceof Array ? " length='" + ArrayCaster.cast( obj ).size() + "'" : "" ) + ">";
 		if ( obj instanceof IStruct ) {
 			IStruct struct = ( IStruct ) obj;
 			serialization += struct.entrySet().stream().map( ( entry ) -> {
-				return "<var name=\"" + escapeXmlAttribute( entry.getKey().toString() ) + "\">" + serializeObject( entry.getValue() ) + "</var>";
+				return "<var name='" + escapeXmlAttribute( entry.getKey().toString() ) + "'>" + serializeObject( entry.getValue() ) + "</var>";
 			} ).collect( Collectors.joining() );
 		} else if ( obj instanceof Array ) {
 			serialization += ArrayCaster.cast( obj ).stream().map( WDDXUtil::serializeObject ).collect( Collectors.joining() );
@@ -203,14 +203,14 @@ public class WDDXUtil {
 		Key		classKey		= Key.of( "recordset" );
 		String	serialization	= "<"
 		    + classKey.getName()
-		    + " rowCount=\"" + obj.getData().size() + "\""
-		    + " fieldNames=\"" + obj.getColumnList() + "\""
-		    + " type=\"" + obj.getClass().getName() + "\""
+		    + " rowCount='" + obj.getData().size() + "'"
+		    + " fieldNames='" + obj.getColumnList() + "'"
+		    + " type='" + obj.getClass().getName() + "'"
 		    + ">";
 
 		serialization	+= obj.getColumnArray().stream().map( ( column ) -> {
 
-							String field = "<field name=\"" + escapeXmlAttribute( column.toString() ) + "\">";
+							String field = "<field name='" + escapeXmlAttribute( column.toString() ) + "'>";
 
 							field	+= Stream.of( obj.getColumnData( Key.of( column ) ) )
 							    .map( WDDXUtil::serializeObject )
