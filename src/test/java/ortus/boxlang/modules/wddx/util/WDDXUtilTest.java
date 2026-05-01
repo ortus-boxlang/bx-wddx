@@ -22,6 +22,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.time.ZoneId;
 
 import org.junit.jupiter.api.DisplayName;
@@ -73,7 +74,7 @@ public class WDDXUtilTest {
 		qry.setCell( Key.of( "col2" ), 1, 101 );
 		String wddx = WDDXUtil.serializeObject( qry );
 		assertEquals(
-		    "<recordset rowCount='3' fieldNames='foo,col2' type='ortus.boxlang.runtime.types.Query'><field name='foo'><string>bar</string><string>brad</string><string>luis</string></field><field name='col2'><integer>100</integer><integer>101</integer><integer>42</integer></field></recordset>",
+		    "<recordset rowCount='3' fieldNames='foo,col2' type='ortus.boxlang.runtime.types.Query'><field name='foo'><string>bar</string><string>brad</string><string>luis</string></field><field name='col2'><number>100</number><number>101</number><number>42</number></field></recordset>",
 		    wddx );
 	}
 
@@ -148,6 +149,30 @@ public class WDDXUtilTest {
 	void testSerializeEscapesSpecialCharsInValues() {
 		String wddx = WDDXUtil.serializeObject( "foo < bar & baz > qux" );
 		assertEquals( "<string>foo &lt; bar &amp; baz &gt; qux</string>", wddx );
+	}
+
+	@DisplayName( "Test decimal numbers serialize as number element" )
+	@Test
+	void testSerializeDecimalAsNumber() {
+		// BigDecimal should serialize as <number>, not <bigDecimal>
+		String wddx = WDDXUtil.serializeObject( new BigDecimal( "1.3" ) );
+		assertEquals( "<number>1.3</number>", wddx );
+
+		// Double should also serialize as <number>
+		String wddx2 = WDDXUtil.serializeObject( 5000000.0 );
+		assertEquals( "<number>5000000.0</number>", wddx2 );
+
+		// Integer should serialize as <number>
+		String wddx3 = WDDXUtil.serializeObject( 42 );
+		assertEquals( "<number>42</number>", wddx3 );
+	}
+
+	@DisplayName( "Test decimal in struct serializes as number element" )
+	@Test
+	void testSerializeDecimalInStructAsNumber() {
+		IStruct	test	= Struct.of( "maxFileSize", new BigDecimal( "5000000" ) );
+		String	wddx	= WDDXUtil.serializeObject( test );
+		assertThat( wddx ).contains( "<var name='maxFileSize'><number>5000000</number></var>" );
 	}
 
 	@DisplayName( "Test round-trip serialization/deserialization with special characters" )

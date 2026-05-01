@@ -171,7 +171,9 @@ public class WDDXUtil {
 			return "<boolean value='" + obj.toString() + "'/>";
 		}
 
-		Key		classKey		= Key.of( StringUtil.lcFirst( obj.getClass().getSimpleName() ) );
+		Key		classKey		= obj instanceof Number
+		    ? Key.of( "number" )
+		    : Key.of( StringUtil.lcFirst( obj.getClass().getSimpleName() ) );
 		String	serialization	= "<" + classKey.getName() + ( obj instanceof Array ? " length='" + ArrayCaster.cast( obj ).size() + "'" : "" ) + ">";
 		if ( obj instanceof IStruct ) {
 			IStruct struct = ( IStruct ) obj;
