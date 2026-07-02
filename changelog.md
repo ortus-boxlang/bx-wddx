@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-07-02
+
 ## [1.5.5] - 2026-05-01
 
 ## [1.5.4] - 2026-04-22
@@ -44,7 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of module
 
-[unreleased]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.5.5...HEAD
+[unreleased]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.5.5...v1.6.0
 [1.5.5]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.5.4...v1.5.5
 [1.5.4]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.5.3...v1.5.4
 [1.5.3]: https://github.com/ortus-boxlang/bx-wddx/compare/v1.5.1...v1.5.3
